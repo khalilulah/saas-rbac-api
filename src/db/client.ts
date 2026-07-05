@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import ws from "ws";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -28,6 +29,9 @@ export function createUserScopedClient(userJwt: string): SupabaseClient {
         Authorization: `Bearer ${userJwt}`,
       },
     },
+    realtime: {
+      transport: ws as any,
+    },
   });
 }
 
@@ -40,4 +44,9 @@ export function createUserScopedClient(userJwt: string): SupabaseClient {
 export const supabaseAdmin: SupabaseClient = createClient(
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
+  {
+    realtime: {
+      transport: ws as any,
+    },
+  },
 );
