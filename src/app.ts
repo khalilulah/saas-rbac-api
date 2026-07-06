@@ -4,12 +4,14 @@ import { resolveTenant } from "./middleware/tenant";
 import { requirePermission } from "./middleware/permission";
 import authRoutes from "./features/auth/auth.routes";
 import organizationRoutes from "./features/organizations/organizations.routes";
+import membershipRoutes from "./features/memberships/membership.routes";
 
 const app = express();
 app.use(express.json());
 
 app.use("/auth", authRoutes);
 app.use("/", organizationRoutes);
+app.use("/organizations", membershipRoutes);
 
 // Temporary inline test route — proves the full chain works,
 // including RLS, before we build out the real features/ structure.
