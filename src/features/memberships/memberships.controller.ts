@@ -112,3 +112,20 @@ export async function removeMember(req: Request, res: Response) {
 
   return res.status(204).send();
 }
+
+// src/features/memberships/memberships.controller.ts
+
+export async function listMembers(req: Request, res: Response) {
+  const organizationId = req.membership!.organizationId;
+
+  const { data, error } = await req
+    .supabase!.from("memberships")
+    .select("id, user_id, role_id, roles(name)")
+    .eq("organization_id", organizationId);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  return res.json({ members: data });
+}

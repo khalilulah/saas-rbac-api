@@ -5,6 +5,7 @@ import { resolveTenant } from "../../middleware/tenant";
 import {
   changeRole,
   inviteMember,
+  listMembers,
   removeMember,
 } from "./memberships.controller";
 
@@ -33,5 +34,6 @@ router.delete(
   requirePermission("remove", "member"),
   removeMember,
 );
+router.get("/:orgId/members", authenticate, resolveTenant, listMembers);
 
 export default router;
