@@ -9,11 +9,13 @@ import {
   updateProject,
   deleteProject,
 } from "./projects.controller";
+import { apiKeyAuth } from "../../middleware/apiKeyAuth";
 
 const router = Router({ mergeParams: true });
 
 router.get(
   "/",
+  apiKeyAuth,
   authenticate,
   resolveTenant,
   requirePermission("view", "project"),

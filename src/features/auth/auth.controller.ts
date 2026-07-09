@@ -1,6 +1,14 @@
 import { Request, Response } from "express";
 import { createUserScopedClient } from "../../db/client";
 
+declare global {
+  namespace Express {
+    interface Request {
+      usingApiKey?: boolean;
+    }
+  }
+}
+
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
 

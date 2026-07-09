@@ -3,17 +3,18 @@ import { authenticate } from "../../middleware/auth";
 import { requirePermission } from "../../middleware/permission";
 import { resolveTenant } from "../../middleware/tenant";
 import { createTask, deleteTask, getTask, updateTask } from "./task.controller";
+import { apiKeyAuth } from "../../middleware/apiKeyAuth";
 
 const router = Router({ mergeParams: true });
 
 router.get(
   "/",
+  apiKeyAuth,
   authenticate,
   resolveTenant,
   requirePermission("view", "task"),
   getTask,
 );
-
 router.post(
   "/",
   authenticate,

@@ -15,7 +15,7 @@ app.use("/", organizationRoutes);
 app.use("/organizations", membershipRoutes);
 app.use("/organizations", apiRoutes);
 
-app.use("/organizations/:orgId/projects", projectsRoutes);
 app.use("/tasks", taskRoutes);
+app.use("/organizations/:orgId/projects", projectsRoutes);
 
 export default app;

@@ -13,6 +13,10 @@ export async function resolveTenant(
   res: Response,
   next: NextFunction,
 ) {
+  if (req.usingApiKey) {
+    // req.membership was already populated by apiKeyAuth.
+    return next();
+  }
   const organizationId = req.headers["x-organization-id"] as string | undefined;
 
   if (!organizationId) {

@@ -18,6 +18,10 @@ export async function authenticate(
   res: Response,
   next: NextFunction,
 ) {
+  if (req.usingApiKey) {
+    // Already authenticated via API key — nothing to do here.
+    return next();
+  }
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

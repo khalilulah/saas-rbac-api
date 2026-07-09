@@ -42,3 +42,36 @@ export async function createApiKey(req: Request, res: Response) {
     warning: "This key will not be shown again. Store it securely now.",
   });
 }
+
+// src/features/api-keys/api-keys.controller.ts (add to existing file)
+
+export async function listApiKeys(req: Request, res: Response) {
+  const { data, error } = await req
+    .supabase!.from("api_keys")
+    .select("id, name, key_prefix, created_at, revoked_at, roles(name)")
+    .eq("organization_id", req.membership!.organizationId);
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  // Never select key_hash here — there's no reason a client ever needs
+  // the hash, and returning it would just widen the attack surface
+  // for no benefit.
+  return res.json({ apiKeys: data });
+}
+
+export async function revokeApiKey(req: Request, res: Response) {
+  const { keyId } = req.params;
+
+  const { data, error } = await req
+    .supabase!.from("api_keys")
+    .update({ revoked_at: new Date().toISOString() })
+    .eq("id", keyId)
+    .eq("organization_id", req.membership!.organizationId)
+    .select("id, name, revoked_at")
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  if (!data) return res.status(404).json({ error: "API key not found" });
+
+  return res.json({ apiKey: data });
+}
