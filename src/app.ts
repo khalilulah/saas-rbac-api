@@ -6,6 +6,7 @@ import membershipRoutes from "./features/memberships/membership.routes";
 import apiRoutes from "./features/api-keys/api-keys.routes";
 import projectsRoutes from "./features/projects/projects.routes";
 import taskRoutes from "./features/tasks/task.routes";
+import { errorHandler } from "./middleware/errors";
 
 const app = express();
 app.use(express.json());
@@ -17,5 +18,6 @@ app.use("/organizations", apiRoutes);
 
 app.use("/tasks", taskRoutes);
 app.use("/organizations/:orgId/projects", projectsRoutes);
+app.use(errorHandler);
 
 export default app;

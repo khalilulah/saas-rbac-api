@@ -1,7 +1,13 @@
 import { Request, Response } from "express";
+import { asyncHandler } from "../../middleware/asyncHandler";
+import { AppError } from "../../utils/AppError";
 
-export async function createTask(req: Request, res: Response) {
+export const createTask = asyncHandler(async (req: Request, res: Response) => {
   const { title, projectId } = req.body;
+
+  if (!title || !projectId) {
+    throw new AppError(400, "title and projectId are required");
+  }
 
   const { data, error } = await req
     .supabase!.from("tasks")
@@ -13,21 +19,21 @@ export async function createTask(req: Request, res: Response) {
     .select()
     .single();
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) throw new AppError(500, error.message);
   return res.status(201).json({ task: data });
-}
+});
 
-export async function getTask(req: Request, res: Response) {
+export const getTask = asyncHandler(async (req: Request, res: Response) => {
   const { data, error } = await req
     .supabase!.from("tasks")
     .select("*")
     .eq("organization_id", req.membership!.organizationId);
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) throw new AppError(500, error.message);
   return res.json({ tasks: data });
-}
+});
 
-export async function updateTask(req: Request, res: Response) {
+export const updateTask = asyncHandler(async (req: Request, res: Response) => {
   const { taskId } = req.params;
   const { title, status } = req.body;
 
@@ -39,11 +45,11 @@ export async function updateTask(req: Request, res: Response) {
     .select()
     .single();
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) throw new AppError(500, error.message);
   return res.json({ task: data });
-}
+});
 
-export async function deleteTask(req: Request, res: Response) {
+export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
   const { taskId } = req.params;
 
   const { error } = await req
@@ -52,6 +58,6 @@ export async function deleteTask(req: Request, res: Response) {
     .eq("id", taskId)
     .eq("organization_id", req.membership!.organizationId);
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) throw new AppError(500, error.message);
   return res.status(204).send();
-}
+});
