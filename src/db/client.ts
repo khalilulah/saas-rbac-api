@@ -31,6 +31,7 @@ export function createUserScopedClient(userJwt: string): SupabaseClient {
     },
     realtime: {
       transport: ws as any,
+      params: { eventsPerSecond: -1 },
     },
   });
 }
